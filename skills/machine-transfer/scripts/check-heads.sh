@@ -11,6 +11,8 @@
 #   MISSING  no such path, repo, local branch or remote branch
 # A fresh clone has only its default branch locally; a row then matches on
 # the remote-tracking branch alone. Exit 1 unless every row is MATCH.
+# Run it only over your own clones: a repo's git config can run programs
+# when git reads it, so don't point it at a checkout you don't trust.
 # --fetch  fetch the remote in each repo first (read-only for your branches).
 set -u
 

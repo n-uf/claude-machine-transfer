@@ -10,7 +10,9 @@
 #
 # --depth N  how deep to look for checkouts (default 3)
 # --fetch    fetch every remote first, so "on a remote" is current
-# Read-only apart from --fetch.
+# Read-only apart from --fetch. Run it only over your own folders: a repo's
+# git config can run programs when git reads it, so an untrusted checkout
+# under <root> could execute code.
 # Not covered: gitignored local files (.env, local config). List those with
 #   git -C <repo> status --ignored --short | grep -vE 'node_modules|\.next|dist|build'
 set -u
