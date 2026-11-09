@@ -13,10 +13,11 @@ and tools are signed in. Copying the disk moves the files and loses the rest.
 
 1. **Take stock** of sessions, repos, worktrees, unpushed work and `~/.claude`.
 2. **Agree the layout**: what moves, in which waves, how files travel.
-3. **Prepare the target**: same paths, tools, sign-ins, sidebar sections.
-4. **Freeze and hand off**: each lead session reaches a safe point, pushes,
+3. **Prepare the target**: same paths, tools, sign-ins, sidebar sections, and
+   an entry session reachable over Remote Control.
+4. **Push everything to remotes**: nothing exists on one machine only.
+5. **Freeze and hand off**: each lead session reaches a safe point, pushes,
    and writes a handoff note, a branch ledger and a handover message.
-5. **Push everything to remotes**: nothing exists on one machine only.
 6. **Carry over**: clones from GitHub; the rest over GitHub or Syncthing as
    sealed (secret-scanned, checksummed, optionally `age`-encrypted) archives.
 7. **Restart lead sessions**: a successor starts on the target, checks every
@@ -46,6 +47,9 @@ git clone https://github.com/n-uf/claude-machine-transfer.git
 cp -R claude-machine-transfer/skills/machine-transfer ~/.claude/skills/
 ```
 
+Install it on both machines: the target's entry session and successors use
+the same scripts.
+
 ## Use
 
 In the session that will coordinate the move, on the source machine:
@@ -53,6 +57,10 @@ In the session that will coordinate the move, on the source machine:
 ```
 /machine-transfer plan a move of this workspace to my new Mac
 ```
+
+Installed as a plugin, the command carries the plugin's name:
+`/machine-transfer:machine-transfer`. Asking Claude to plan a move of your
+workspace to a new Mac loads the skill either way.
 
 The skill walks through the stages, writes the briefs for the target's entry
 session, and gives each lead session the freeze brief and templates for its
@@ -68,8 +76,9 @@ handoff.
 | `skills/machine-transfer/scripts/` | `scan-workspace.sh`, `scan-unpushed.sh`, `stage-claude-home.sh`, `seal-archive.sh`, `check-archive.sh`, `check-heads.sh` |
 
 The scripts are plain bash for macOS (they run on the stock bash 3.2). They
-need `git`; `seal-archive.sh` needs [`gitleaks`](https://github.com/gitleaks/gitleaks),
-and encryption needs [`age`](https://github.com/FiloSottile/age).
+need git 2.31 or newer; `seal-archive.sh` needs
+[`gitleaks`](https://github.com/gitleaks/gitleaks) 8.19 or newer, and
+encryption needs [`age`](https://github.com/FiloSottile/age).
 
 ## Scope
 
