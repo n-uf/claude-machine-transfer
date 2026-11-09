@@ -188,8 +188,10 @@ remote.
   4. Settings arrive as `settings.json.from-source` (and
      `settings.local.json.from-source`), so the source's hooks and paths don't
      act on the target yet. Check every absolute path in them (an SSH agent
-     socket, a hook script, a tool path) exists on the target, then the
-     operator merges them into `settings.json`.
+     socket, a hook script, a tool path) exists on the target. Review what
+     runs or grants access before it's live: `hooks`, `permissions`
+     (`defaultMode` above all), `env` and `apiKeyHelper`. Then the operator
+     merges them into `settings.json`.
 - MCP servers: add the user-scope servers again on the target
   (`claude mcp add …`); their keys are made fresh.
 - Memory, later waves: memory keeps changing on the source. Before each wave's

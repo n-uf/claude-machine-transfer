@@ -63,6 +63,9 @@ scripts/check-archive.sh "$a" "$m" "$HOME" --identity ~/.config/age/transfer.key
 Then merge `settings.json.from-source` by hand after checking its paths
 (stage 6 in [stages.md](stages.md)).
 
+The manifest isn't encrypted: it lists every file name and path in the
+archive. Keep the repo and its release private for that reason.
+
 Delete the release after the check passes:
 `gh release delete transfer-wave-1 --repo your-org/workspace-ops --yes --cleanup-tag`.
 
@@ -72,7 +75,8 @@ Use it when files are large (asset folders, sample data) or change during the
 transfer (a folder you keep working in until cut over).
 
 1. Install on both: `brew install syncthing`, then `brew services start syncthing`.
-   The web UI is at `http://127.0.0.1:8384`.
+   The web UI is at `http://127.0.0.1:8384`. Set a GUI user and password
+   (Settings → GUI) if other people or programs share the machine.
 2. **Pair by device ID.** Each machine shows its ID under Actions → Show ID.
    Add the other machine's ID by hand; don't accept unknown devices.
 3. **LAN only.** In Settings → Connections on both machines, turn off

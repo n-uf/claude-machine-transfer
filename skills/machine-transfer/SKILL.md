@@ -123,7 +123,9 @@ patterns: [references/coordination.md](references/coordination.md).
   project whose successor is already restored.
 - **Settings arrive set aside.** `settings.json` is staged as
   `settings.json.from-source`, so the source's hooks and paths don't act on
-  the target before their paths are checked and the operator merges them.
+  the target before the operator has checked the paths, reviewed `hooks`,
+  `permissions` (`defaultMode` above all), `env` and `apiKeyHelper`, and
+  merged them.
 - **Scheduled tasks run on one machine only.** Recreate on the target
   disabled, disable on the source, then enable on the target; never both
   enabled.

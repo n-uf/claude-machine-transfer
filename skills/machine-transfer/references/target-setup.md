@@ -33,6 +33,12 @@ this list. Check them before the first successor starts.
   line, installs get a 401. Don't export `GITHUB_TOKEN` globally for this:
   `gh` then uses it instead of its stored login. Don't copy the source's
   `~/.npmrc` if it holds a literal token.
+
+  Package install scripts can read `NODE_AUTH_TOKEN`, and `gh auth token`
+  carries every scope your login has. Safer: a fine-grained or classic token
+  with `read:packages` only, used just for installs; or install with scripts
+  off first (`pnpm install --ignore-scripts`) and run the scripts you trust
+  without the token set.
 - Git identity: `git config --global user.name` and `user.email`, or per
   clone if you use different identities per project.
 
@@ -57,8 +63,9 @@ this list. Check them before the first successor starts.
 - `~/.claude` is unpacked and checked (stage 6), after a backup of the whole
   folder (`cp -Rp ~/.claude ~/.claude.pre-transfer`).
 - `settings.json.from-source`: every absolute path in it (an SSH agent
-  socket, a hook script, a tool path) exists on the target. Then the operator
-  merges it into `settings.json`. Report paths that don't exist; don't edit
+  socket, a hook script, a tool path) exists on the target, and `hooks`,
+  `permissions` (`defaultMode`), `env` and `apiKeyHelper` have been read.
+  Then the operator merges it into `settings.json`. Report paths that don't exist; don't edit
   blindly.
 - MCP servers from the source's `claude mcp list` are added again
   (`claude mcp add …`), with fresh keys.
