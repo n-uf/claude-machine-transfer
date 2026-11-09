@@ -5,9 +5,9 @@
 #
 # 1. Decrypts an .age archive with --identity (to a temp file, removed after).
 # 2. Lists the members and refuses absolute paths, '..' and a bare '.'/'./'.
-# 3. Unpacks into <unpack-root> (files with the same name are replaced: back
-#    up what you need first).
-# 4. Runs the manifest with shasum; prints nothing more on success.
+# 3. Unpacks into <unpack-root> (files with the same name are replaced: run
+#    --list first and back up the root's copy of those members).
+# 4. Runs the manifest with shasum. Ends with "ok: …" and exit 0 on success.
 # --list  stop after step 2 (shows the top-level members, changes nothing).
 set -euo pipefail
 
@@ -29,7 +29,7 @@ done
 manifest=$(cd "$(dirname "$manifest")" && pwd)/$(basename "$manifest")
 
 tmp=
-cleanup() { [ -n "$tmp" ] && rm -f "$tmp"; }
+cleanup() { if [ -n "$tmp" ]; then rm -f "$tmp"; fi; return 0; }
 trap cleanup EXIT
 case $archive in
   *.age)
