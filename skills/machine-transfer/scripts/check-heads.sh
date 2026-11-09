@@ -40,7 +40,13 @@ while IFS='|' read -r _ c1 c2 c3 _; do
   fi
   if [ $fetch = 1 ]; then
     common=$(git -C "$path" rev-parse --path-format=absolute --git-common-dir)
-    case $fetched in *" $common "*) ;; *) git -C "$path" fetch -q "$remote" 2>/dev/null; fetched="$fetched$common " ;; esac
+    case $fetched in
+      *" $common "*) ;;
+      *)
+        git -C "$path" fetch -q "$remote" 2>/dev/null ||
+          echo "WARN     $path  fetch from $remote failed: $remote/* may be stale"
+        fetched="$fetched$common " ;;
+    esac
   fi
   loc=$(git -C "$path" rev-parse -q --verify "refs/heads/$branch^{commit}" 2>/dev/null || true)
   rem=$(git -C "$path" rev-parse -q --verify "refs/remotes/$remote/$branch^{commit}" 2>/dev/null || true)
