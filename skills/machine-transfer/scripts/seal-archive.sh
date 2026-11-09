@@ -35,10 +35,24 @@ fi
 mkdir -p "$out"
 out=$(cd "$out" && pwd)
 
+# Symlinks would travel in the tar without being scanned or listed in the
+# manifest. Stage with real files instead (stage-claude-home.sh does).
+links=$(cd "$root" && find "$member" -type l)
+if [ -n "$links" ]; then
+  echo "STOP: symlinks in $root/$member (replace them with the files they point to):" >&2
+  printf '%s\n' "$links" | head -20 >&2
+  exit 1
+fi
+
 echo "== $name: scanning $root/$member for secrets"
-if ! gitleaks dir "$root/$member" --no-banner --redact >/dev/null 2>&1; then
+rc=0
+gitleaks dir "$root/$member" --no-banner --redact --exit-code 3 >/dev/null 2>&1 || rc=$?
+if [ $rc = 3 ]; then
   gitleaks dir "$root/$member" --no-banner --redact -v 2>&1 | grep -E 'RuleID|File:' || true
   echo "STOP: gitleaks found something in $name. Remove it from the staged copy and run again." >&2
+  exit 1
+elif [ $rc != 0 ]; then
+  echo "STOP: gitleaks failed (exit $rc). 'gitleaks dir' needs gitleaks 8.19 or newer." >&2
   exit 1
 fi
 
