@@ -58,7 +58,8 @@ sequenceDiagram
 
 - For every repo and branch in the ledger: `git rev-parse <branch>` (and
   `origin/<branch>` after a fetch) equals the ledger's commit.
-  `scripts/check-heads.sh <ledger>` does this.
+  `scripts/check-heads.sh <ledger> --fetch` does this. The ledger lists main
+  clones only; worktrees don't exist yet and are recreated in step 4.
 - Any mismatch: stop, report the exact output to the predecessor and the
   coordinator. Don't "fix" it by resetting.
 - All match: reply "ready" to the predecessor (or to the coordinator, when
@@ -69,8 +70,10 @@ sequenceDiagram
 - Install dependencies, recreate worktrees at the paths in the handoff note.
 - Restart child sessions from the handoff note's restart briefs, in its own
   sidebar section, nested under itself.
-- Recreate its scheduled tasks if the handoff moves them; the predecessor
-  then disables them on the source.
+- Recreate its scheduled tasks **disabled**, if the handoff moves them. The
+  coordinator (or the operator) disables them on the source, then the
+  successor enables its copies. The predecessor is retired by then and does
+  nothing more.
 - **Some of this needs the operator.** The successor's first turns begin with
   another session's message (the handover), and the app refuses to create
   scheduled tasks or start sessions from such a turn: a session start turns

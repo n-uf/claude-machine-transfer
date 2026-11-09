@@ -22,17 +22,23 @@ old machine's grant after creating the new one revokes both.
    application-default login).
 3. Check the target's credential works; the source's no longer does.
 
-Write this order into the handoff note of the session that owns the
-credential, with the exact click path or command for the operator.
+**When:** the grant belongs to the user, not to a session. Revoking it cuts
+off every session on the source that still uses it, including later waves and
+stay-behind sessions. So swap it at cut-over (stage 8), unless only the wave
+being moved uses it; then swap it during that wave's restore.
+
+Write this order and timing into the handoff note of the session that owns
+the credential, with the exact click path or command for the operator.
 
 ## Scheduled tasks run on one machine only
 
-- In stage 4, each lead session lists its scheduled tasks
+- In stage 5, each lead session lists its scheduled tasks
   (`~/.claude/scheduled-tasks/*`) and says, for each: keep running, move,
   or leave disabled.
 - **Move** = the successor recreates the task on the target from its
-  definition (copied next to the handoff note), then the predecessor disables
-  it on the source. Never both enabled.
+  definition (copied next to the handoff note), **disabled**; the coordinator
+  or the operator disables it on the source; then the target's copy is
+  enabled. Never both enabled. (The predecessor is retired by then.)
 - The successor can't create a scheduled task from a turn that another
   session's message began (its handover, for example): the app refuses. The
   operator asks for it in the successor's own session. List these tasks under
