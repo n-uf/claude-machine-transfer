@@ -24,7 +24,7 @@ done
 # Only a named member, never "." or "./": unpacking "./" would rewrite the
 # permissions and owner of the unpack root itself (e.g. $HOME).
 case $member in
-  .|./|/*|*..*|'') echo "STOP: member must be a relative name inside <root>, not '$member'" >&2; exit 1 ;;
+  .|./|/*|*..*|-*|'') echo "STOP: member must be a relative name inside <root>, not '$member'" >&2; exit 1 ;;
 esac
 member=${member%/}
 [ -e "$root/$member" ] || { echo "STOP: no $root/$member" >&2; exit 1; }
@@ -62,7 +62,7 @@ count=$(cd "$root" && find "$member" -type f ! -name .DS_Store | wc -l | tr -d '
 (cd "$root" && find "$member" -type f ! -name .DS_Store -print0 | sort -z | xargs -0 shasum -a 256) >"$manifest"
 
 tarball=$out/$name.tar.gz
-COPYFILE_DISABLE=1 tar -czf "$tarball" --exclude .DS_Store -C "$root" "$member"
+COPYFILE_DISABLE=1 tar -czf "$tarball" --exclude .DS_Store -C "$root" -- "$member"
 
 if [ ${#recipients[@]} -gt 0 ]; then
   age "${recipients[@]}" -o "$tarball.age" "$tarball"
