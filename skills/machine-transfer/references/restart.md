@@ -1,0 +1,91 @@
+# How a lead session comes back on the target
+
+Five steps, one owner each: the entry session spawns, the predecessor hands
+over, the successor verifies and restores, the predecessor retires.
+
+```mermaid
+sequenceDiagram
+    participant P as Predecessor (source)
+    participant E as Entry session (target)
+    participant S as Successor (target)
+    participant C as Child sessions (target)
+    Note over E: operator types the go
+    E->>S: 1. spawn: same title, Remote Control on, "wait for your handover"
+    P->>S: 2. handover message (or S reads it from a file)
+    S->>S: 3. verify: git rev-parse per branch = ledger
+    S->>P: "ready"
+    S->>C: 4. restore: restart child sessions from the handoff note
+    Note over P: 5. retire: idle, not archived
+```
+
+## Before step 1
+
+- The wave's folders, clones and `~/.claude` are on the target (stage 6).
+- The handoff notes are on the target. A private repo that holds them is the
+  simplest route: the entry session pulls it.
+- The target prerequisites hold ([target-setup.md](target-setup.md)).
+
+## 1. Spawn (entry session)
+
+- The operator types the go **in the entry session**. The app refuses to start
+  sessions from a turn that another session's message began, so a relayed
+  "go" doesn't work.
+- One session per lead session in the wave, with:
+  - the predecessor's title,
+  - its sidebar section and working folder,
+  - **Remote Control on**,
+  - the model and effort the operator wants,
+  - a short opening brief: "You are the successor of <title> on the target
+    machine. Wait for your handover message" — or, when the handover is a
+    file, "Read <path>/handover.md and follow it as your handover."
+- The entry session doesn't read the lead session's state and doesn't start
+  child sessions.
+- It reports each new session's id to the coordinator.
+
+## 2. Handover (predecessor → successor)
+
+- The predecessor finds its successor in `ListAgents` as a Remote Control row
+  with the same title. Two rows with one title: use the row's `[ref]`.
+- It sends the handover message from
+  [../templates/handover-message.md](../templates/handover-message.md).
+- **Remote Control off on the predecessor:** it can't see Remote Control rows.
+  It writes the handover to a file instead. Either the successor reads the
+  file (opening brief above) or the coordinator relays it word for word.
+- Session ids: record the `local_…` id from the session list, not the id in a
+  transcript file name; they differ.
+
+## 3. Verify (successor)
+
+- For every repo and branch in the ledger: `git rev-parse <branch>` (and
+  `origin/<branch>` after a fetch) equals the ledger's commit.
+  `scripts/check-heads.sh <ledger>` does this.
+- Any mismatch: stop, report the exact output to the predecessor and the
+  coordinator. Don't "fix" it by resetting.
+- All match: reply "ready" to the predecessor (or to the coordinator, when
+  it relayed the handover).
+
+## 4. Restore (successor)
+
+- Install dependencies, recreate worktrees at the paths in the handoff note.
+- Restart child sessions from the handoff note's restart briefs, in its own
+  sidebar section, nested under itself.
+- Recreate its scheduled tasks if the handoff moves them; the predecessor
+  then disables them on the source.
+- Message other successors to re-establish sync points.
+- Report "restored" to the coordinator with a short note
+  ([../templates/restored-note.md](../templates/restored-note.md)).
+- Stay frozen: no ship, merge, push or publish until the coordinator lifts the
+  wave's freeze.
+
+## 5. Retire (predecessor)
+
+- After "ready", the predecessor does nothing more on the source.
+- Its last message to the successor says so.
+- It stays idle in the sidebar. It is not archived unless the operator asks.
+
+## Rules
+
+- One owner per step: entry session spawns, predecessor hands over,
+  successor verifies and restores.
+- Nothing ships, merges or pushes during steps 1–4.
+- The wave's freeze holds until step 4 is done for every lead session in it.
