@@ -3,6 +3,7 @@
 #   NO-REMOTE  a git checkout with no remote at all
 #   WORKTREE   a checkout with uncommitted files or commits on no remote
 #   BRANCH     a local branch whose tip is on no remote (+N commits)
+#   STASH      a repo with stash entries (they never reach a remote)
 # Silent for anything fully on a remote. Exit 1 if anything was listed.
 #
 #   scan-unpushed.sh <root> [--depth N] [--fetch]
@@ -10,6 +11,8 @@
 # --depth N  how deep to look for checkouts (default 3)
 # --fetch    fetch every remote first, so "on a remote" is current
 # Read-only apart from --fetch.
+# Not covered: gitignored local files (.env, local config). List those with
+#   git -C <repo> status --ignored --short | grep -vE 'node_modules|\.next|dist|build'
 set -u
 
 root=${1:?usage: scan-unpushed.sh <root> [--depth N] [--fetch]}
@@ -38,6 +41,8 @@ while IFS= read -r gitpath; do
       n=$(git -C "$p" rev-list --count "refs/heads/$b" --not --remotes 2>/dev/null)
       if [ "${n:-0}" != 0 ]; then printf 'BRANCH     %s  %s  +%s\n' "$rel" "$b" "$n"; found=1; fi
     done < <(git -C "$p" for-each-ref --format='%(refname:short)' refs/heads)
+    s=$(git -C "$p" stash list 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$s" != 0 ]; then printf 'STASH      %s  %s entries\n' "$rel" "$s"; found=1; fi
   fi
   up=$(git -C "$p" rev-list --count HEAD --not --remotes 2>/dev/null || echo 0)
   dirty=$(git -C "$p" status --porcelain 2>/dev/null | wc -l | tr -d ' ')

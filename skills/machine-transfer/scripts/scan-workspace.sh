@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Inventory of a projects root: one TSV row per entry, two levels down.
+# Inventory of a projects root: one TSV row per entry at the first level, and
+# one per entry inside first-level folders that aren't git checkouts.
+# Sizes leave out node_modules and common build output (they get reinstalled).
 # Columns: path, kind (clone|worktree|plain|file), main repo (for worktrees),
 # branch, dirty file count, last commit date, size, last modified.
 #
@@ -19,15 +21,27 @@ skip() { # names that are noise at the top two levels
   return 1
 }
 
-{
-  printf 'path\tkind\tmain\tbranch\tdirty\tlast_commit\tsize\tmodified\n'
-  find "$root" -mindepth 1 -maxdepth 2 | sort | while IFS= read -r p; do
+entries() { # first-level entries, plus the children of plain (non-git) folders
+  find "$root" -mindepth 1 -maxdepth 1 | sort | while IFS= read -r p; do
     skip "$(basename "$p")" && continue
-    # Skip entries inside a skipped first-level folder (e.g. root/node_modules/x).
-    first=${p#"$root"/}; first=${first%%/*}
-    skip "$first" && continue
+    echo "$p"
+    if [ -d "$p" ] && [ ! -e "$p/.git" ]; then
+      find "$p" -mindepth 1 -maxdepth 1 | sort | while IFS= read -r c; do
+        skip "$(basename "$c")" || echo "$c"
+      done
+    fi
+  done
+}
+
+size_wo_deps() { # KB without dependencies and build output
+  du -sk -I node_modules -I .next -I dist -I build -I .turbo -I .venv -I target "$1" 2>/dev/null | cut -f1
+}
+
+{
+  printf 'path\tkind\tmain\tbranch\tdirty\tlast_commit\tsize_mb\tmodified\n'
+  entries | while IFS= read -r p; do
     rel=${p#"$root"/}
-    size=$(du -sh "$p" 2>/dev/null | cut -f1)
+    kb=$(size_wo_deps "$p"); size=$(( ${kb:-0} / 1024 ))
     mod=$(stat -f %Sm -t %F "$p" 2>/dev/null || date -r "$p" +%F)
     if [ -f "$p" ]; then
       printf '%s\tfile\t\t\t\t\t%s\t%s\n' "$rel" "$size" "$mod"
