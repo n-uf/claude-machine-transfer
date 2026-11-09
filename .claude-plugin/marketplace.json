@@ -1,0 +1,12 @@
+{
+  "name": "n-uf-machine-transfer",
+  "owner": { "name": "n-uf", "url": "https://github.com/n-uf" },
+  "description": "The machine-transfer skill for Claude Code, from n-uf.",
+  "plugins": [
+    {
+      "name": "machine-transfer",
+      "source": "./",
+      "description": "Move a multi-session Claude Code workspace to another Mac by fresh restarts."
+    }
+  ]
+}
