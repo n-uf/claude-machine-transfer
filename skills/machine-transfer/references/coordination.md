@@ -52,7 +52,9 @@ Two sides will sometimes disagree: "signed in" vs "401", "pushed" vs
 
 ## Freeze discipline
 
-- The freeze brief says exactly what stops (ship, merge, push, publish) and
-  what keeps running (remote scheduled publishing, CI on already-open PRs).
+- The freeze brief says exactly what stops and what keeps running. Manual
+  ship, merge, push and publish stop. Dated content that publishes itself on
+  a remote schedule (a GitHub Actions cron, for example) keeps going: it
+  doesn't depend on either machine.
 - Only the coordinator lifts a wave's freeze, after every successor in it
   reports restored. It tells each successor, and each confirms.

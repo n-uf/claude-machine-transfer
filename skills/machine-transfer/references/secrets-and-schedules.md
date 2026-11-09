@@ -33,6 +33,13 @@ credential, with the exact click path or command for the operator.
 - **Move** = the successor recreates the task on the target from its
   definition (copied next to the handoff note), then the predecessor disables
   it on the source. Never both enabled.
+- The successor can't create a scheduled task from a turn that another
+  session's message began (its handover, for example): the app refuses. The
+  operator asks for it in the successor's own session. List these tasks under
+  "operator steps" in the handover message.
+- A stay-behind lead session keeps its tasks on the source; if a successor
+  had already recreated them, it deletes its copies and the source's are
+  re-enabled.
 - A one-off task due before the successor is up stays on the source; keep the
   source awake for it, and recreate it on the target only if it didn't run.
 - Tasks that were already disabled stay disabled on the source; don't move

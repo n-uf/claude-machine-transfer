@@ -71,6 +71,13 @@ sequenceDiagram
   sidebar section, nested under itself.
 - Recreate its scheduled tasks if the handoff moves them; the predecessor
   then disables them on the source.
+- **Some of this needs the operator.** The successor's first turns begin with
+  another session's message (the handover), and the app refuses to create
+  scheduled tasks or start sessions from such a turn: a session start turns
+  into a card the operator clicks, a scheduled task is refused. Plan them as
+  operator steps typed in the successor's own session ("create the scheduled
+  tasks", "start the builders"), or as cards the operator clicks. The
+  handover message lists them, so the operator knows to expect them.
 - Message other successors to re-establish sync points.
 - Report "restored" to the coordinator with a short note
   ([../templates/restored-note.md](../templates/restored-note.md)).
@@ -80,8 +87,40 @@ sequenceDiagram
 ## 5. Retire (predecessor)
 
 - After "ready", the predecessor does nothing more on the source.
-- Its last message to the successor says so.
+- Its last message to the successor says so. With Remote Control off it can't
+  reach the successor: it gives that final note to the coordinator, who
+  relays it word for word.
 - It stays idle in the sidebar. It is not archived unless the operator asks.
+
+## Sessions start on their own machine only
+
+A session can start new sessions on its own machine, in the cloud, or on a
+saved SSH host, not on the other Mac. So the entry session starts the
+successors on the target, each successor starts its own child sessions, and
+nothing on the source starts anything on the target. The operator can steer
+any session on either machine over Remote Control.
+
+## A lead session that stays behind
+
+Not every lead session has to move. One that depends on the source (a tool
+or device only that machine has, a long job running there) can stay and be
+used from the target over Remote Control.
+
+Decide it before its wave freezes when you can. If a successor already
+exists:
+
+1. The successor hands back anything new: pushes its branches and sends a
+   short note of what changed since the handover.
+2. It removes what it created on the target: its worktrees, any registrations
+   in your own tools, and its scheduled tasks.
+3. The original is brought back: message it first (Remote Control can be
+   turned on only for a session that has run a turn), then turn its Remote
+   Control on. Re-enable its scheduled tasks on the source.
+4. The successor is archived, only on the operator's own word typed on the
+   target. A session with a live Remote Control client can't be archived:
+   turn its Remote Control off first.
+
+Record the stay-behind on the transfer board, with its address on the source.
 
 ## Rules
 

@@ -23,6 +23,12 @@ Do now:
    restart the child sessions from their restart briefs, nested under you.
 4. Report "restored" to the transfer coordinator with a short note.
 
+Operator steps to expect (the app won't do these from a turn another
+session's message began; the operator types them in this session or clicks
+the cards):
+- Start child sessions: <titles>.
+- Create scheduled tasks: <names, enabled or disabled>.
+
 The wave is frozen: nothing ships, merges, pushes or publishes until the
 transfer coordinator lifts the freeze.
 

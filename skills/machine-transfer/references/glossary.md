@@ -14,6 +14,7 @@ people tend to use for the same thing, so you can map your own notes.
 | **Child session** | A session a lead session started and supervises: builders, a release session, side tasks. | builder, worker, nested session |
 | **Predecessor** | A lead session on the source, once its successor exists. | old hub |
 | **Successor session** | The lead session's replacement on the target. It takes over from the handoff note, not from session history. | twin, new hub |
+| **Stay-behind lead session** | A lead session that doesn't move: it stays on the source and is used from the target over Remote Control. | |
 | **Wave** | The set of sessions and repos that move together, normally one sidebar section. | group, batch |
 | **Change freeze** | While a wave moves, its sessions don't ship, merge, push or publish. | freeze |
 | **Safe point** | A moment where nothing is half-done: work is committed, in-flight changes are landed or parked on a branch. | |

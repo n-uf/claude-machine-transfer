@@ -91,9 +91,14 @@ the right account and scopes.
 6. Report to the coordinator: handoff path, anything unpushed and why,
    scheduled tasks, anything waiting on the operator.
 
-Content that goes live on a date through a remote service (scheduled
-publishing on GitHub, for example) keeps running; it doesn't depend on
-either machine.
+Dated content that publishes itself on a remote schedule (a GitHub Actions
+cron, for example) keeps running; it doesn't depend on either machine. Only
+manual ship, merge, push and publish stop.
+
+A lead session that should stay on the source (it needs a tool or device
+only the source has) says so here; it keeps running and is used from the
+target over Remote Control ([restart.md](restart.md), "A lead session that
+stays behind").
 
 **Ends with:** every lead session in the wave idle, every head in every ledger
 equal to the remote.

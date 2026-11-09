@@ -19,8 +19,10 @@ Method: fresh restart. Freeze → handoff → successor on the target → handov
 3. **Scheduled tasks:** list yours and say whether each keeps running. They
    move to the target and are disabled here, never both.
 4. **Freeze:** after the handoff, nothing ships, merges, pushes or publishes
-   until the transfer coordinator says the wave is restored. Scheduled
-   publishing that runs on a remote service keeps going.
+   until the transfer coordinator says the wave is restored. Dated content
+   that publishes itself on a remote schedule (a GitHub Actions cron) keeps
+   going; only manual ship, merge, push and publish stop.
+   If your session should stay on this machine instead of moving, say so now.
 5. **Report** to the transfer coordinator (`<address>`) in a few lines:
    handoff path, anything left unpushed and why, your scheduled tasks,
    anything waiting on the operator.

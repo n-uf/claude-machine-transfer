@@ -93,9 +93,17 @@ patterns: [references/coordination.md](references/coordination.md).
 
 ## Claude Code specifics to know before you start
 
-- **The app won't start sessions from a turn another session began.** A
-  session can't spawn successors because a peer messaged it. The operator
-  types the go in the entry session.
+- **The app won't start sessions or create scheduled tasks from a turn
+  another session began.** The operator types the go in the entry session
+  to start successors. A successor's first turns come from the handover
+  message, so its child sessions and scheduled tasks are operator steps too
+  (typed in its own session, or cards to click); the handover lists them.
+- **Sessions start on their own machine only** (or in the cloud, or on a saved
+  SSH host). Nothing on the source starts sessions on the target; the
+  operator steers either side over Remote Control.
+- **A lead session can stay behind** on the source and be used from the
+  target over Remote Control: see "A lead session that stays behind" in
+  [references/restart.md](references/restart.md).
 - **Remote Control off means no Remote Control rows.** A lead session with
   Remote Control off can't see or message sessions on the target. Write the
   handover message to a file; the successor reads it, or the coordinator
