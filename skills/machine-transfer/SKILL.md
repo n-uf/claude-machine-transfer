@@ -145,7 +145,9 @@ patterns: [references/coordination.md](references/coordination.md).
 
 - Don't copy credentials, keychain items, `.env` files with live values, or
   tokens in `~/.npmrc`.
-- Don't open SSH or Remote Login between the machines: it exposes the OS user.
+- Don't open SSH or Remote Login between the machines by default: it exposes
+  the whole OS user account. If you must, follow the hardened setup in
+  [references/restart.md](references/restart.md).
 - Don't archive or delete old sessions; they retire idle.
 - Don't lift a wave's freeze before every successor in it reports restored.
 - Don't change system or security settings from a session; give the

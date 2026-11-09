@@ -11,7 +11,7 @@ primary; two are fallbacks; one is ruled out.
 | **Syncthing** | Large or recurring transfers | Primary. Paired by device ID, LAN-only, one direction. |
 | AirDrop | A one-off large file when Syncthing isn't set up | Fallback. Lands in `~/Downloads`, which the app can't read. |
 | USB drive | A one-off when there's no network between the machines | Fallback. Encrypt with `age` first. |
-| ~~SSH / Remote Login~~ | — | **Never.** It opens the OS user to the network. |
+| ~~SSH / Remote Login~~ | — | **Not for files.** It opens the whole OS user account (files, signed-in CLIs, any program) to the network. If you need SSH to start sessions, see [restart.md](restart.md) for the hardened setup. |
 
 ## GitHub: a private repo for small non-secret files
 

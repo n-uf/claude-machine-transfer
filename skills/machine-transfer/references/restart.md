@@ -100,6 +100,23 @@ successors on the target, each successor starts its own child sessions, and
 nothing on the source starts anything on the target. The operator can steer
 any session on either machine over Remote Control.
 
+The default is **no SSH**: Remote Control plus one click by the operator per
+new session. SSH into a machine gives the whole user account (every file,
+every signed-in CLI, any program run as that user), not just Claude Code.
+If you still want one machine to start sessions on the other as a saved SSH
+host, harden it:
+
+- A private overlay network only (Tailscale or WireGuard). No port open on the
+  LAN or the internet.
+- Key-only authentication; `AllowUsers` for the one account, and
+  `from="<peer IP>"` on its key in `authorized_keys`.
+- One direction only.
+- Ideally a separate, non-admin macOS user that can reach the work folders
+  and nothing else.
+
+The costs: that user has its own `~/.claude`, its own sign-ins, and a
+different home path, so memory folders and absolute paths no longer match.
+
 ## A lead session that stays behind
 
 Not every lead session has to move. One that depends on the source (a tool
