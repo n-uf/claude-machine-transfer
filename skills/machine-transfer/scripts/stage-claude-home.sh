@@ -3,28 +3,36 @@
 # commands, hooks, plugin settings and memory. Leaves out session history,
 # caches, credentials and scheduled tasks.
 #
-#   stage-claude-home.sh <stage-dir> [--memory-only] [--skip-project GLOB]... [--include NAME]...
+#   stage-claude-home.sh <stage-dir> [--memory-only] [--only-project GLOB]... [--skip-project GLOB]... [--include NAME]...
 #
 # The result is <stage-dir>/.claude/…, so seal it with
 #   seal-archive.sh claude-home <stage-dir> .claude <out-dir>
 # and unpack it on the target into "$HOME".
 #
+# settings.json and settings.local.json are staged as *.from-source, so the
+# source's hooks and paths don't take effect on the target before someone
+# has checked them. Merge them by hand after the path check.
+# Symlinks are replaced by the files they point to, so the scan sees them.
+#
 # --memory-only        only projects/*/memory (to re-send memory between waves)
+# --only-project GLOB  only memory of project folders matching GLOB (repeatable)
 # --skip-project GLOB  leave out memory of project folders matching GLOB
-#                      (folder names under ~/.claude/projects, e.g. '-opt-work-private*')
+#                      (folder names under ~/.claude/projects, e.g. '-opt-work-docs-site*')
 # --include NAME       also copy ~/.claude/NAME (file or folder)
 # CLAUDE_HOME          source folder (default ~/.claude)
 set -euo pipefail
 
-stage=${1:?usage: stage-claude-home.sh <stage-dir> [--memory-only] [--skip-project GLOB]... [--include NAME]...}
+stage=${1:?usage: stage-claude-home.sh <stage-dir> [--memory-only] [--only-project GLOB]... [--skip-project GLOB]... [--include NAME]...}
 shift
 src=${CLAUDE_HOME:-$HOME/.claude}
 memory_only=0
+onlys=()
 skips=()
 extra=()
 while [ $# -gt 0 ]; do
   case $1 in
     --memory-only) memory_only=1; shift ;;
+    --only-project) onlys+=("${2:?--only-project needs a glob}"); shift 2 ;;
     --skip-project) skips+=("${2:?--skip-project needs a glob}"); shift 2 ;;
     --include) extra+=("${2:?--include needs a name}"); shift 2 ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
@@ -37,12 +45,16 @@ if [ -e "$dst" ] && [ -n "$(ls -A "$dst")" ]; then
   echo "STOP: $dst is not empty" >&2; exit 1
 fi
 mkdir -p "$dst"
-rs() { rsync -a --exclude .DS_Store --exclude node_modules --exclude __pycache__ "$@"; }
+rs() { rsync -aL --exclude .DS_Store --exclude node_modules --exclude __pycache__ "$@"; }
 
 if [ $memory_only = 0 ]; then
-  # Files: user-level instructions and settings (no credentials live here).
-  for f in CLAUDE.md settings.json settings.local.json keybindings.json; do
-    [ -f "$src/$f" ] && cp -p "$src/$f" "$dst/"
+  # Files: user-level instructions and settings. settings.json can hold an
+  # `env` block, MCP headers or an apiKeyHelper: read it before sealing.
+  for f in CLAUDE.md keybindings.json; do
+    if [ -f "$src/$f" ]; then cp -pL "$src/$f" "$dst/"; fi
+  done
+  for f in settings.json settings.local.json; do
+    if [ -f "$src/$f" ]; then cp -pL "$src/$f" "$dst/$f.from-source"; fi
   done
   # Folders: your own building blocks.
   for d in agents commands hooks skills output-styles bin; do
@@ -67,6 +79,14 @@ n=0
 for m in "$src"/projects/*/memory; do
   [ -d "$m" ] || continue
   proj=$(basename "$(dirname "$m")")
+  if [ ${#onlys[@]} -gt 0 ]; then
+    keep=0
+    for g in "${onlys[@]}"; do
+      # shellcheck disable=SC2254
+      case $proj in $g) keep=1 ;; esac
+    done
+    [ $keep = 1 ] || continue
+  fi
   for g in ${skips[@]+"${skips[@]}"}; do
     # shellcheck disable=SC2254
     case $proj in $g) continue 2 ;; esac
@@ -77,4 +97,7 @@ for m in "$src"/projects/*/memory; do
 done
 
 echo "staged $dst: $(find "$dst" -type f | wc -l | tr -d ' ') files, memory of $n projects"
-echo "not staged on purpose: session history (projects/*.jsonl), todos, caches, credentials, scheduled-tasks"
+echo "not staged on purpose: session history (projects/*.jsonl), todos, caches, credentials, scheduled-tasks, ~/.claude.json"
+if [ $memory_only = 0 ]; then
+  echo "settings staged as settings*.json.from-source: merge them on the target after checking their paths"
+fi
