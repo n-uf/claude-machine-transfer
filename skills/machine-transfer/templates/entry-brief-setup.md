@@ -1,7 +1,12 @@
 # Brief for the entry session: folder skeleton and sidebar sections
 
 You're preparing this machine to mirror the source. This step makes empty
-folders and sidebar sections only. No repos, files or config yet.
+folders and sidebar sections only. No repos, files or config yet, apart from
+what the operator did by hand in step 0 (app, this session, the skill, `gh`
+sign-in, the transfer repo clone).
+
+The operator pastes this brief into the entry session; later briefs arrive as
+files in the transfer repo.
 
 ## 0. Look first, report, change nothing
 
@@ -9,8 +14,9 @@ folders and sidebar sections only. No repos, files or config yet.
 - Can you write to it without `sudo`?
 - Which sidebar tools do you have? List the current sections and sessions.
 
-If `/opt/work` already holds anything, stop after this report and wait. If
-creating it needs `sudo`, give the exact command for the operator and wait.
+If `/opt/work` holds anything besides the transfer repo, stop after this
+report and wait. If creating it needs `sudo`, give the exact command for the
+operator and wait.
 
 ## 1. Folder skeleton (empty folders only)
 

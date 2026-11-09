@@ -19,7 +19,9 @@ What this session owns: apps, sites, packages, repos. Link the plan of record
 | /opt/work/web-app | your-org/web-app | main | `0123456` | shared clone |
 | /opt/work/web-app-checkout-retry | your-org/web-app | feat/checkout-retry | `89abcde` | worktree; recreate on the target |
 
-Full commits: `branch-ledger.md` beside this note.
+Full commits for the main clones: `branch-ledger.md` beside this note.
+Worktrees are listed only here; the successor recreates them after it has
+checked the ledger.
 
 ## In flight
 
@@ -46,12 +48,24 @@ must not do while the wave is frozen.
 
 | Task | Schedule | Decision |
 |---|---|---|
-| weekly-report | Mondays 08:00 | move: definition in `scheduled-tasks/weekly-report/`; disable here after the successor recreates it |
+| weekly-report | Mondays 08:00 | move: definition in `scheduled-tasks/weekly-report/`; successor recreates it disabled, the coordinator disables it here, then it's enabled there |
+
+## Local-only files
+
+Files git ignores that the work needs: `.env`, local config, test data.
+Names and paths only, and how the successor recreates each (fresh secrets,
+copied from an example file, regenerated). Never their secret values.
+
+## MCP servers
+
+The servers this session uses (`claude mcp list`), their scope, and where
+their keys come from on the target.
 
 ## Credentials the successor needs
 
 Names only, and who makes them on the target (never values). Note any
-revoke-then-create order.
+revoke-then-create order, and whether it waits for cut-over because other
+sessions share the grant.
 
 ## Sync points
 

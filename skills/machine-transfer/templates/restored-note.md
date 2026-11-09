@@ -3,7 +3,7 @@
 Handover received <date> (directly / relayed / from file). "ready" sent.
 
 ## Checks
-- `check-heads.sh` on the ledger: all MATCH (paste the summary line).
+- `check-heads.sh --fetch` on the ledger: all MATCH, no WARN (paste the summary line).
 - Anything else checked against the handoff note: open PRs, last CI run.
 
 ## Restore

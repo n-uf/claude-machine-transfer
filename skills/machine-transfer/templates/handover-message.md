@@ -15,8 +15,9 @@ Read first:
 State in one line: <nothing in flight / what's in flight>.
 
 Do now:
-1. Verify: run `scripts/check-heads.sh <path>/branch-ledger.md`. Every row
-   must print MATCH. On any mismatch, stop and send the output to
+1. Verify: run `scripts/check-heads.sh <path>/branch-ledger.md --fetch`
+   (`scripts/` is the machine-transfer skill's folder). Every row must print
+   MATCH, with no WARN. On any mismatch, stop and send the output to
    <predecessor or transfer coordinator>.
 2. Reply "ready" to <predecessor or transfer coordinator>.
 3. Restore: install dependencies, recreate the worktrees in the handoff note,
