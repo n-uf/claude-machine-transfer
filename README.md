@@ -24,8 +24,8 @@ and tools are signed in. Copying the disk moves the files and loses the rest.
    session retires idle.
 8. **Verify and cut over**, then the next wave.
 
-It came out of a real move of a few dozen sessions across five sidebar
-sections, and encodes what went wrong along the way: missing package scopes,
+It came out of a real move of a workspace with many sessions, and encodes
+what went wrong along the way: missing package scopes,
 a headless browser that won't start until it's opened once, OAuth grants that
 must be revoked before they're re-created, the app's refusal to start
 sessions from another session's turn, and more.
