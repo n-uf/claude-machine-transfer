@@ -54,7 +54,9 @@ must not do while the wave is frozen.
 
 Files git ignores that the work needs: `.env`, local config, test data.
 Names and paths only, and how the successor recreates each (fresh secrets,
-copied from an example file, regenerated). Never their secret values.
+copied from an example file, regenerated, or sent as one private file and
+waiting in the target's inbox to be moved in after its worktree exists).
+Never their secret values.
 
 ## MCP servers
 

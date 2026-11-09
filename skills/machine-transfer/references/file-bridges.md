@@ -34,6 +34,7 @@ On the target:
 ```bash
 mkdir -p ~/.config/age && chmod 700 ~/.config/age
 age-keygen -o ~/.config/age/transfer.key   # prints "Public key: age1…"
+chmod 600 ~/.config/age/transfer.key
 ```
 
 Send the public key (`age1…`) to the source through the private repo or a
@@ -68,6 +69,43 @@ archive. Keep the repo and its release private for that reason.
 
 Delete the release after the check passes:
 `gh release delete transfer-wave-1 --repo your-org/workspace-ops --yes --cleanup-tag`.
+
+### One private file
+
+For a single private file (a local config with secrets that a successor
+needs, a key it can't make fresh), skip the archive and encrypt the file
+itself. Same key as above.
+
+On the source:
+
+```bash
+f=/opt/work/web-app/.env.local
+shasum -a 256 "$f" | cut -d' ' -f1 > env-local.sha256     # checksum of the plaintext
+age -r age1examplepublickey -o env-local.age "$f"
+gh release create transfer-env-local --repo your-org/workspace-ops --title "one private file" \
+  --notes "age-encrypted; sha256 of the plaintext attached" env-local.age env-local.sha256
+rm env-local.age env-local.sha256
+```
+
+On the target, into a private inbox:
+
+```bash
+inbox=/opt/work/_inbox/private && mkdir -p "$inbox" && chmod 700 "$inbox"
+gh release download transfer-env-local --repo your-org/workspace-ops --dir "$inbox"
+age -d -i ~/.config/age/transfer.key -o "$inbox/env-local" "$inbox/env-local.age"
+[ "$(shasum -a 256 "$inbox/env-local" | cut -d' ' -f1)" = "$(cat "$inbox/env-local.sha256")" ] && echo ok
+rm "$inbox/env-local.age" "$inbox/env-local.sha256"
+```
+
+Then the source deletes the release (`gh release delete … --yes --cleanup-tag`).
+
+- **Never print the plaintext**: not with `cat`, not in a log, not in a
+  session's reply. Compare checksums, not contents.
+- **Leave it in the inbox when its folder doesn't exist yet.** A file that
+  belongs in a worktree waits there for the successor: `git worktree add`
+  refuses a folder that isn't empty, so the successor creates the worktree
+  first, then moves the file in. Name it in the handoff note under
+  "Local-only files".
 
 ## Syncthing: large or recurring transfers
 
