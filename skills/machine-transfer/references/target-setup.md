@@ -25,12 +25,14 @@ this list. Check them before the first successor starts.
   token from the environment, never a literal token:
 
   ```
-  //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+  //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
   ```
 
-  and export `GITHUB_TOKEN` from `gh auth token` where installs run. Without
-  the line, installs get a 401. Don't copy the source's `~/.npmrc` if it holds
-  a literal token.
+  and set the variable only for the install:
+  `NODE_AUTH_TOKEN=$(gh auth token) pnpm install` (or npm, yarn). Without the
+  line, installs get a 401. Don't export `GITHUB_TOKEN` globally for this:
+  `gh` then uses it instead of its stored login. Don't copy the source's
+  `~/.npmrc` if it holds a literal token.
 - Git identity: `git config --global user.name` and `user.email`, or per
   clone if you use different identities per project.
 
@@ -48,13 +50,25 @@ this list. Check them before the first successor starts.
 
 ## Claude Code
 
-- The desktop app is installed and signed in to the same account.
+- The desktop app is installed and signed in to the same account; the entry
+  session exists with Remote Control on; this skill is installed (stage 3,
+  step 0).
 - Sidebar sections exist in the source's order.
-- `~/.claude` is unpacked and checked (stage 6). Back up the target's own
-  `settings.json` and `CLAUDE.md` first.
-- Absolute paths in `settings.json` (an SSH agent socket, a hook script, a
-  tool path) exist on the target. Report any that don't; don't edit blindly.
+- `~/.claude` is unpacked and checked (stage 6), after a backup of the whole
+  folder (`cp -Rp ~/.claude ~/.claude.pre-transfer`).
+- `settings.json.from-source`: every absolute path in it (an SSH agent
+  socket, a hook script, a tool path) exists on the target. Then the operator
+  merges it into `settings.json`. Report paths that don't exist; don't edit
+  blindly.
+- MCP servers from the source's `claude mcp list` are added again
+  (`claude mcp add …`), with fresh keys.
 - Your own skills and scripts run: try one command from each.
+
+## Versions the scripts need
+
+- git 2.31 or newer (`check-heads.sh` and `scan-workspace.sh` use
+  `rev-parse --path-format=absolute`).
+- gitleaks 8.19 or newer (`gitleaks dir`), and `age` for encrypted archives.
 
 ## The target's own sessions
 

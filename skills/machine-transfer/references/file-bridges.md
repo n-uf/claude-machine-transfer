@@ -1,12 +1,13 @@
 # File bridges
 
 Repos travel as clones from their remote. Everything else (non-git folders,
-`~/.claude` config and memory, bundles) needs a file bridge. Two bridges are
-primary; two are fallbacks; one is ruled out.
+`~/.claude` config and memory, bundles) needs a file bridge. GitHub (a repo or
+a release) and Syncthing are the primary bridges; AirDrop and USB are
+fallbacks; SSH is ruled out.
 
 | Bridge | Use for | Notes |
 |---|---|---|
-| **GitHub, private repo** | Small, non-secret files: handoff notes, briefs, scripts, carry-over folders without secrets | Primary. Both machines already have `gh`. History shows what changed. |
+| **GitHub, private repo** | Small, non-secret files: handoff notes, briefs, scripts, carry-over folders without secrets | Primary. Both machines use `gh` anyway (the target once stage 3 signs it in). History shows what changed. |
 | **GitHub, private release + `age`** | Private files: `~/.claude` archives, memory, bundles | Primary. Encrypted to a key made on the target. |
 | **Syncthing** | Large or recurring transfers | Primary. Paired by device ID, LAN-only, one direction. |
 | AirDrop | A one-off large file when Syncthing isn't set up | Fallback. Lands in `~/Downloads`, which the app can't read. |
@@ -21,8 +22,8 @@ primary; two are fallbacks; one is ruled out.
   for a folder not yet committed).
 - Keep screenshots, large binaries and build output out of git with
   `.gitignore`; send those over Syncthing if they must move.
-- On the target, the entry session clones it once and `git pull --ff-only`
-  per wave.
+- On the target, the operator clones it in stage 3 (step 0); the entry
+  session runs `git pull --ff-only` per wave.
 
 ## GitHub: `age`-encrypted archives on a private release
 
@@ -31,16 +32,20 @@ The private key is made on the target and never leaves it.
 On the target:
 
 ```bash
+mkdir -p ~/.config/age && chmod 700 ~/.config/age
 age-keygen -o ~/.config/age/transfer.key   # prints "Public key: age1…"
 ```
 
 Send the public key (`age1…`) to the source through the private repo or a
 message; it isn't secret.
 
-On the source:
+On the source (`scripts/` is this skill's scripts folder):
 
 ```bash
-scripts/seal-archive.sh claude-home /tmp/stage .claude ./out --age age1examplepublickey
+stage=$(mktemp -d) && chmod 700 "$stage"
+scripts/stage-claude-home.sh "$stage"
+scripts/seal-archive.sh claude-home "$stage" .claude ./out --age age1examplepublickey
+rm -rf "$stage"
 gh release create transfer-wave-1 --repo your-org/workspace-ops --title "transfer wave 1" \
   --notes "sealed archives, see manifests" ./out/claude-home.tar.gz.age ./out/claude-home.manifest.txt
 ```
@@ -49,9 +54,14 @@ On the target:
 
 ```bash
 gh release download transfer-wave-1 --repo your-org/workspace-ops --dir /opt/work/_inbox
-scripts/check-archive.sh /opt/work/_inbox/claude-home.tar.gz.age /opt/work/_inbox/claude-home.manifest.txt "$HOME" \
-  --identity ~/.config/age/transfer.key
+a=/opt/work/_inbox/claude-home.tar.gz.age m=/opt/work/_inbox/claude-home.manifest.txt
+scripts/check-archive.sh "$a" "$m" "$HOME" --identity ~/.config/age/transfer.key --list
+cp -Rp ~/.claude ~/.claude.pre-transfer
+scripts/check-archive.sh "$a" "$m" "$HOME" --identity ~/.config/age/transfer.key
 ```
+
+Then merge `settings.json.from-source` by hand after checking its paths
+(stage 6 in [stages.md](stages.md)).
 
 Delete the release after the check passes:
 `gh release delete transfer-wave-1 --repo your-org/workspace-ops --yes --cleanup-tag`.
@@ -94,8 +104,8 @@ transfer (a folder you keep working in until cut over).
   `--age` for anything private.
 - **AirDrop** lands in `~/Downloads`. macOS privacy controls block the app
   from reading `~/Downloads`, Desktop and Documents without a grant. Don't
-  change the grant from a session. Ask the operator to move the file:
-  `mv ~/Downloads/claude-home.tar.gz /opt/work/_inbox/`.
+  change the grant from a session. Ask the operator to move the archive and
+  its manifest: `mv ~/Downloads/claude-home.tar.gz.age ~/Downloads/claude-home.manifest.txt /opt/work/_inbox/`.
 - **USB**: copy the encrypted archive and its manifest; eject; on the target,
   copy into `/opt/work/_inbox/` and run `scripts/check-archive.sh`.
 - Delete the archive from the inbox after the check passes.
@@ -111,6 +121,9 @@ Every archive that isn't a git clone is sealed:
    unpack root.
 4. **Tar the member by name**, never `./`: unpacking `./` rewrites the
    permissions and owner of the unpack root itself (for example `$HOME`).
-5. **Check on unpack**: `scripts/check-archive.sh` lists the members first,
+5. **No symlinks**: `seal-archive.sh` refuses them, because they'd travel
+   unscanned. `stage-claude-home.sh` copies the files they point to instead.
+6. **Check on unpack**: `scripts/check-archive.sh` lists the members first,
    refuses absolute paths and `..`, unpacks, then runs the manifest with
-   `shasum -a 256 -c --quiet` (prints nothing on success).
+   `shasum -a 256 -c`. It ends with `ok:` and exit 0 on success. Run it with
+   `--list` before the real unpack, and back up what it will replace.

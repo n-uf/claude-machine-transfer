@@ -40,8 +40,10 @@ Two sides will sometimes disagree: "signed in" vs "401", "pushed" vs
 
 ## Message patterns
 
-- **Briefs** go as files in the private repo plus a one-line message that
-  names the file. Long briefs in a message get cut or misread.
+- **Briefs** go as files in the transfer repo plus a one-line message that
+  names the file. Long briefs in a message get cut or misread. The very first
+  brief on the target is pasted by the operator, since nothing there can read
+  the repo before step 0 of stage 3.
 - **First line first:** the recipient often sees only the first line until it
   opens the message. Make it say what the message is.
 - **Approvals don't travel.** An approval the operator gave to one session
