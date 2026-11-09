@@ -52,26 +52,30 @@ over on the target, and a **wave** is one sidebar section moved at a time.
 
 ## The eight stages
 
-Stages 1–3 run once. Stages 4–7 repeat for each wave. Stages 3 and 4 can run
+Stages 1–4 run once. Stages 5–7 repeat for each wave. Stages 3 and 4 can run
 side by side. Details, checks and the "ends with" for each stage:
-[references/stages.md](references/stages.md).
+[references/stages.md](references/stages.md). `scripts/…` below means this
+skill's own `scripts` folder; install the skill on the target too (stage 3,
+step 0), so both machines have the same scripts.
 
 1. **Take stock.** Inventory sessions (open, nested, by sidebar section),
-   folders, repos, worktrees, unpushed commits, folders with no remote, and
-   the `~/.claude` setup. Run `scripts/scan-workspace.sh` and
-   `scripts/scan-unpushed.sh`.
+   folders, repos, worktrees, unpushed commits and stashes, folders with no
+   remote, gitignored local files, MCP servers, and the `~/.claude` setup.
+   Run `scripts/scan-workspace.sh` and `scripts/scan-unpushed.sh`.
 2. **Agree the layout.** What moves now, later or never; the folder layout on
-   the target; the waves and their order; how files travel. Record each
-   decision with its letter on the transfer board.
-3. **Prepare the target.** Folder skeleton, sidebar sections in order, tools
-   at the source's versions, the operator signed in.
+   the target; the waves and their order; who stays behind; how files travel.
+   Record each decision with its letter on the transfer board.
+3. **Prepare the target.** The operator installs the app, creates the entry
+   session with Remote Control on, installs this skill, signs in to `gh` and
+   clones the transfer repo. Then the entry session builds the folder
+   skeleton, sidebar sections and tools.
    Checklist: [references/target-setup.md](references/target-setup.md).
-4. **Freeze and hand off (per wave).** Send the freeze brief
-   ([templates/freeze-brief.md](templates/freeze-brief.md)). Each lead
-   session reaches a safe point, pushes its branches, and writes a handoff
-   note, a branch ledger and a handover message.
-5. **Push everything to remotes.** Private repos for folders with no remote,
+4. **Push everything to remotes.** Private repos for folders with no remote,
    `git bundle` for branches that can't be pushed, a secret scan first.
+5. **Freeze and hand off (per wave).** Send the freeze brief
+   ([templates/freeze-brief.md](templates/freeze-brief.md)). Each lead
+   session reaches a safe point, pushes its branches, writes a handoff note,
+   a branch ledger and a handover message, then freezes.
    `scripts/scan-unpushed.sh` must come back empty for the wave.
 6. **Carry over (per wave).** The entry session clones every repo at the same
    path. Non-git files and `~/.claude` travel over a file bridge as sealed
@@ -79,7 +83,7 @@ side by side. Details, checks and the "ends with" for each stage:
 7. **Restart lead sessions (per wave).** Spawn → handover → verify → restore →
    retire: [references/restart.md](references/restart.md).
 8. **Verify and cut over.** Run a real check end to end on the target, lift
-   the freeze, then the next wave starts at stage 4. When the last wave is
+   the freeze, then the next wave starts at stage 5. When the last wave is
    done, the operator switches machines.
 
 ## Coordination
@@ -113,10 +117,18 @@ patterns: [references/coordination.md](references/coordination.md).
 - **Session id is not transcript id.** A session's `local_…` id and the file
   name of its transcript differ. Record the session id on the board.
 - **Memory keeps changing.** Memory written after the first `~/.claude`
-  archive must be sent again (`scripts/seal-archive.sh` on the memory folders
-  only) before each wave's successors start.
-- **Scheduled tasks run on one machine only.** Recreate on the target, then
-  disable on the source; never both enabled.
+  archive must be sent again before each wave's successors start:
+  `scripts/stage-claude-home.sh <dir> --memory-only --only-project '<glob>'`
+  for that wave's projects, then seal and check. Never unpack it over a
+  project whose successor is already restored.
+- **Settings arrive set aside.** `settings.json` is staged as
+  `settings.json.from-source`, so the source's hooks and paths don't act on
+  the target before their paths are checked and the operator merges them.
+- **Scheduled tasks run on one machine only.** Recreate on the target
+  disabled, disable on the source, then enable on the target; never both
+  enabled.
+- **MCP servers live in `~/.claude.json`,** which isn't copied (it holds
+  account state). Add the servers again on the target with fresh keys.
 - **macOS privacy.** The app can't read `~/Downloads` (or Desktop and
   Documents) without a privacy grant. Have the operator move incoming files
   to a folder under the project root rather than changing security settings.
@@ -125,7 +137,7 @@ patterns: [references/coordination.md](references/coordination.md).
 
 | Path | What |
 |---|---|
-| `references/glossary.md` | The terms, with the informal words they replace |
+| `references/glossary.md` | The terms used throughout |
 | `references/stages.md` | Each stage: what gets built, the operator's part, what it ends with |
 | `references/restart.md` | How a lead session comes back on the target |
 | `references/file-bridges.md` | GitHub and Syncthing as primary bridges; AirDrop/USB fallbacks; sealed archives |
