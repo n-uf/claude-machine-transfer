@@ -45,7 +45,16 @@ if [ -e "$dst" ] && [ -n "$(ls -A "$dst")" ]; then
   echo "STOP: $dst is not empty" >&2; exit 1
 fi
 mkdir -p "$dst"
-rs() { rsync -aL --exclude .DS_Store --exclude node_modules --exclude __pycache__ "$@"; }
+rs() { # copy with symlinks replaced by their files; stop on broken links first
+  local src_path=$1 broken
+  broken=$(find -L "$src_path" -type l 2>/dev/null || true)
+  if [ -n "$broken" ]; then
+    echo "STOP: broken symlinks (fix or remove them, then run again):" >&2
+    printf '%s\n' "$broken" | head -20 >&2
+    exit 1
+  fi
+  rsync -aL --exclude .DS_Store --exclude node_modules --exclude __pycache__ "$@"
+}
 
 if [ $memory_only = 0 ]; then
   # Files: user-level instructions and settings. settings.json can hold an
