@@ -100,4 +100,5 @@ encryption needs [`age`](https://github.com/FiloSottile/age).
 
 ## License
 
-[PolyForm Perimeter 1.0.1](./LICENSE).
+[MIT](./LICENSE): open source. Use it, change it and share it, keeping the
+copyright notice. Releases up to 26.11.2 were under PolyForm Perimeter 1.0.1.
