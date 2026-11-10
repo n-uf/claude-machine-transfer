@@ -24,6 +24,12 @@ sequenceDiagram
 - The handoff notes are on the target. A private repo that holds them is the
   simplest route: the entry session pulls it.
 - The target prerequisites hold ([target-setup.md](target-setup.md)).
+- Decide how successors get Remote Control: the app setting "Connect new
+  sessions to Remote Control" on the target, or the operator flips each
+  successor's switch in its toolbar. A session turning it on for another can
+  be stopped by a hook that rewrites the call: no verdict, no denial, and the
+  successor stays off. Without Remote Control a successor can't see or
+  message the coordinator or its predecessor.
 
 ## 1. Spawn (entry session)
 
@@ -33,7 +39,10 @@ sequenceDiagram
 - One session per lead session in the wave, with:
   - the predecessor's title,
   - its sidebar section and working folder,
-  - **Remote Control on**,
+  - **Remote Control on**: by the target's "Connect new sessions to Remote
+    Control" setting, or the operator flips the switch in the new session's
+    toolbar. Check it shows on; if the entry session's own attempt went
+    through without a verdict, assume it didn't take,
   - the model and effort the operator wants,
   - a short opening brief: "You are the successor of <title> on the target
     machine. Wait for your handover message" — or, when the handover is a

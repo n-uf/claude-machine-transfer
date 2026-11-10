@@ -112,6 +112,12 @@ patterns: [references/coordination.md](references/coordination.md).
   Remote Control off can't see or message sessions on the target. Write the
   handover message to a file; the successor reads it, or the coordinator
   relays it.
+- **Turning Remote Control on from a session can fail quietly.** A hook may
+  rewrite the call, so it gets no verdict and no denial, and the successor
+  stays unreachable from the source. Don't count on it: either the target has
+  the app setting "Connect new sessions to Remote Control" on, or the
+  operator flips each successor's Remote Control switch in its toolbar (an
+  operator step in the entry brief and the handover).
 - **Duplicate titles.** A successor usually has its predecessor's title. When
   `ListAgents` shows two rows with one title, address by the row's `[ref]`.
 - **Session id is not transcript id.** A session's `local_…` id and the file

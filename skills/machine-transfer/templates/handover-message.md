@@ -27,6 +27,8 @@ Do now:
 Operator steps to expect (the app won't do these from a turn another
 session's message began; the operator types them in this session or clicks
 the cards):
+- Turn on this session's Remote Control (toolbar switch), if it shows off;
+  without it you can't reach <predecessor or transfer coordinator>.
 - Start child sessions: <titles>.
 - Create scheduled tasks: <names, enabled or disabled>.
 

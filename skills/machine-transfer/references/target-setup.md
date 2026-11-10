@@ -59,6 +59,11 @@ this list. Check them before the first successor starts.
 - The desktop app is installed and signed in to the same account; the entry
   session exists with Remote Control on; this skill is installed (stage 3,
   step 0).
+- **Remote Control for new sessions.** Turn on the app setting "Connect new
+  sessions to Remote Control", or plan for the operator to flip each
+  successor's switch in its toolbar. A session's own call to turn it on can
+  be rewritten by a hook (no verdict, no denial), and a successor without
+  Remote Control can't reach the source.
 - Sidebar sections exist in the source's order.
 - `~/.claude` is unpacked and checked (stage 6), after a backup of the whole
   folder (`cp -Rp ~/.claude ~/.claude.pre-transfer`).
