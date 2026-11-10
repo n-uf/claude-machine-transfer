@@ -16,7 +16,7 @@ skill.
 
 | Term | Meaning |
 |---|---|
-| **Remote Control** | A per-session switch in the Claude desktop app that makes a session reachable from your other devices and from sessions on other machines. A session must have run a turn before it can be turned on. |
+| **Remote Control** | A per-session switch in the Claude desktop app that makes a session reachable from your other devices and from sessions on other machines. A session must have run a turn before it can be turned on. The app setting "Connect new sessions to Remote Control" turns it on for every new session. |
 | **Remote Control row** | How a session on another machine shows up in `ListAgents`: its title, plus a `[ref]` when two rows share a title. |
 | **`ListAgents`** | The tool a session uses to list the sessions and agents it can message. |
 | **Sidebar section** | A named group of sessions in the desktop app's sidebar. |
