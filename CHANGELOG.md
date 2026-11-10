@@ -3,6 +3,12 @@
 Versions are dates (YY.M.R): the year, the month, and the release within
 that month. Any release may change how a move runs.
 
+## 26.11.2
+
+- Stage 4, stashes: `git stash branch` restores a stash without committing
+  it, so pushing right after left the changes on no remote. The step now
+  commits the restored changes before the push.
+
 ## 26.11.1
 
 - Remote Control on successors: a session's call to turn it on for another

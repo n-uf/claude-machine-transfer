@@ -1,6 +1,6 @@
 {
   "name": "machine-transfer",
-  "version": "26.11.1",
+  "version": "26.11.2",
   "description": "Move a multi-session Claude Code workspace to another Mac by fresh restarts: freeze one wave at a time, hand off each lead session to a successor that checks its branch heads, carry the rest over GitHub or Syncthing.",
   "author": { "name": "n-uf", "url": "https://github.com/n-uf" },
   "homepage": "https://n-uf.com/claude-machine-transfer",

@@ -124,8 +124,11 @@ Stages 3 and 4 can run side by side.
 - Branches that can't be pushed (a repo you can't write to, or work you don't
   want on the shared remote): `git bundle create <name>.bundle <branch>…`, then
   carry the bundle as a private file.
-- Stashes: turn each into a branch (`git stash branch <name>`) and push it, or
-  drop it on purpose.
+- Stashes: with a clean working tree, run `git stash branch <name>`, then
+  commit the changes it restores (`git add -A && git commit`), then push the
+  branch. Repeat while `git stash list` shows anything, or drop a stash on
+  purpose (`git stash drop`). `git stash branch` doesn't commit: a push right
+  after it leaves the changes uncommitted, on no remote.
 - Small local config tweaks that aren't committed: write them down in a note
   in the transfer repo rather than committing them to a shared repo.
 - Fix stale absolute paths in memory and scripts before the copy.

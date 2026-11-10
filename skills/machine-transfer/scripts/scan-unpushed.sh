@@ -4,6 +4,8 @@
 #   WORKTREE   a checkout with uncommitted files or commits on no remote
 #   BRANCH     a local branch whose tip is on no remote (+N commits)
 #   STASH      a repo with stash entries (they never reach a remote)
+#              `git stash branch` restores a stash uncommitted, so it then
+#              shows as WORKTREE (dirty=N) until it's committed and pushed.
 # Silent for anything fully on a remote. Exit 1 if anything was listed.
 #
 #   scan-unpushed.sh <root> [--depth N] [--fetch]
