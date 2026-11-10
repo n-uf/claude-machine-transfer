@@ -3,6 +3,11 @@
 Versions are dates (YY.M.R): the year, the month, and the release within
 that month. Any release may change how a move runs.
 
+## 26.11.3
+
+- Licence: the skill is now open source under the MIT licence. Releases up
+  to 26.11.2 were under PolyForm Perimeter 1.0.1. Nothing else changed.
+
 ## 26.11.2
 
 - Stage 4, stashes: `git stash branch` restores a stash without committing
