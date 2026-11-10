@@ -45,6 +45,7 @@ skill.
 | **Handover message** | The first message a successor gets: where the handoff note is, the branch ledger, what's in flight, what waits on the operator, and the operator steps to expect. It may be a file when it can't be sent. |
 | **Restored** | A successor has matched every head in its ledger and restarted its child sessions. |
 | **Retire** | After its successor reports ready, the predecessor does nothing more. It stays idle and is not archived. |
+| **Background service** | Something that runs on its own outside any session: a macOS LaunchAgent, a cron entry, a login item. Runs on one machine at a time and carries its state over. |
 | **Carry-over** | Moving what isn't in git: non-git folders, `~/.claude` config and memory. |
 | **File bridge** | The channel files travel over: GitHub (repo or release) or Syncthing, with AirDrop or USB as fallbacks. |
 | **Sealed archive** | A tar archive that passed a secret scan and comes with a checksum manifest; optionally `age`-encrypted. |

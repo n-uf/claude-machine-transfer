@@ -52,3 +52,6 @@ the credential, with the exact click path or command for the operator.
   them unless asked.
 - Recreated tasks that were disabled on the source start disabled on the
   target too.
+- The same holds for background services (LaunchAgents, cron entries, login
+  items): one machine at a time, never both running. Their order differs
+  because they carry state: [services.md](services.md).

@@ -35,6 +35,10 @@ Sample values used below: projects root `/opt/work`, sidebar sections
 - `~/.claude.json`: user-scope MCP servers and per-project settings
   (`claude mcp list` shows the servers). It also holds account state, so it
   isn't copied; the servers are added again on the target.
+- Background services: `launchctl list | grep -v com.apple`,
+  `~/Library/LaunchAgents`, `crontab -l`, and login items (System Settings →
+  General → Login Items). For each: what it runs, the credentials and state
+  it uses, and its log ([services.md](services.md)).
 - Tools and versions: `node -v`, `python3 --version`, your package manager,
   `git --version`, `gh`, and anything the projects call (cloud SDKs, database
   clients, secret managers, a browser for tests).
@@ -145,7 +149,9 @@ lists is pushed by the lead session that owns it, in stage 5.
    [../templates/handover-message.md](../templates/handover-message.md)).
    Copy anything that lives only in a scratchpad or temporary notes folder
    next to the handoff note: those don't move.
-4. List its scheduled tasks and say which must keep running.
+4. List its scheduled tasks and background services and say which must keep
+   running. A service that moves is stopped on the source only once the
+   target is ready for it ([services.md](services.md)).
 5. Stop its own dev servers by PID. Go idle.
 6. Report to the coordinator: handoff path, anything unpushed and why,
    scheduled tasks, anything waiting on the operator.
@@ -194,6 +200,9 @@ remote.
      merges them into `settings.json`.
 - MCP servers: add the user-scope servers again on the target
   (`claude mcp add …`); their keys are made fresh.
+- Background services: prepare the target, stop on the source, seal and
+  restore the state, install on the target, check its log
+  ([services.md](services.md)). Keep the gap between stop and start short.
 - Memory, later waves: memory keeps changing on the source. Before each wave's
   successors start, re-send that wave's projects only:
   `stage-claude-home.sh <dir> --memory-only --only-project '<glob>'`, then seal

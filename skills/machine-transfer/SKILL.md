@@ -60,7 +60,8 @@ step 0), so both machines have the same scripts.
 
 1. **Take stock.** Inventory sessions (open, nested, by sidebar section),
    folders, repos, worktrees, unpushed commits and stashes, folders with no
-   remote, gitignored local files, MCP servers, and the `~/.claude` setup.
+   remote, gitignored local files, MCP servers, background services, and the
+   `~/.claude` setup.
    Run `scripts/scan-workspace.sh` and `scripts/scan-unpushed.sh`.
 2. **Agree the layout.** What moves now, later or never; the folder layout on
    the target; the waves and their order; who stays behind; how files travel.
@@ -135,6 +136,11 @@ patterns: [references/coordination.md](references/coordination.md).
 - **Scheduled tasks run on one machine only.** Recreate on the target
   disabled, disable on the source, then enable on the target; never both
   enabled.
+- **Background services too.** A LaunchAgent, cron entry or login item runs
+  on one machine only and carries its state. Prepare the target, stop it on
+  the source for good, carry the state, then install it on the target; the
+  operator approves the install in that session, since a relayed approval is
+  refused: [references/services.md](references/services.md).
 - **MCP servers live in `~/.claude.json`,** which isn't copied (it holds
   account state). Add the servers again on the target with fresh keys.
 - **macOS privacy.** The app can't read `~/Downloads` (or Desktop and
@@ -151,6 +157,7 @@ patterns: [references/coordination.md](references/coordination.md).
 | `references/file-bridges.md` | GitHub and Syncthing as primary bridges; AirDrop/USB fallbacks; sealed archives |
 | `references/target-setup.md` | Target prerequisites learned the hard way |
 | `references/secrets-and-schedules.md` | Credentials, OAuth order, scheduled tasks |
+| `references/services.md` | Background services (LaunchAgents, cron, login items) and their state |
 | `references/coordination.md` | Transfer board, check-ins, reconciling reports |
 | `references/state-copy.md` | The heavier alternative: copying session state |
 | `templates/*.md` | Freeze brief, handoff note, branch ledger, handover message, restored note, entry briefs, transfer board |
@@ -172,4 +179,4 @@ patterns: [references/coordination.md](references/coordination.md).
 - Don't lift a wave's freeze before every successor in it reports restored.
 - Don't change system or security settings from a session; give the
   operator the exact command or click path.
-- Don't run a scheduled task on both machines.
+- Don't run a scheduled task or a background service on both machines.

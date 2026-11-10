@@ -73,7 +73,7 @@ handoff.
 | Path | What |
 |---|---|
 | `skills/machine-transfer/SKILL.md` | The method, roles, stages and rules |
-| `skills/machine-transfer/references/` | Glossary, stage details, the restart protocol, file bridges, target setup, credentials and scheduled tasks, coordination, and the state-copy alternative |
+| `skills/machine-transfer/references/` | Glossary, stage details, the restart protocol, file bridges, target setup, credentials and scheduled tasks, background services, coordination, and the state-copy alternative |
 | `skills/machine-transfer/templates/` | Freeze brief, handoff note, branch ledger, handover message, restored note, entry-session briefs, transfer board |
 | `skills/machine-transfer/scripts/` | `scan-workspace.sh`, `scan-unpushed.sh`, `stage-claude-home.sh`, `seal-archive.sh`, `check-archive.sh`, `check-heads.sh` |
 

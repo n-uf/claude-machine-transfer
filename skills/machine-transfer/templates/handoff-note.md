@@ -44,11 +44,12 @@ A paste-ready brief under 40 lines for a fresh session: task, branch,
 worktree path, current head, the next step, the checks it runs, and what it
 must not do while the wave is frozen.
 
-## Scheduled tasks
+## Scheduled tasks and services
 
-| Task | Schedule | Decision |
+| Task or service | Schedule | Decision |
 |---|---|---|
 | weekly-report | Mondays 08:00 | move: definition in `scheduled-tasks/weekly-report/`; successor recreates it disabled, the coordinator disables it here, then it's enabled there |
+| com.example.mail-filter (LaunchAgent) | every 5 min | move: plist beside this note; state `~/.local/state/mail-filter/last-id` sealed after the stop; Keychain item made by the operator on the target; install approved by the operator in the successor's session |
 
 ## Local-only files
 
