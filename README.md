@@ -3,6 +3,8 @@
 A Claude Code skill for moving a busy Claude Code workspace from one Mac to
 another without losing work in flight.
 
+Overview page: [n-uf.com/claude-machine-transfer](https://n-uf.com/claude-machine-transfer)
+
 A workspace with many sessions is more than files: lead sessions run child
 sessions, branches hold unpushed commits, sidebar sections group the work,
 memory and skills live in `~/.claude`, scheduled tasks fire on their own,
