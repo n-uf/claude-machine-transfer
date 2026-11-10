@@ -1,5 +1,12 @@
 # claude-machine-transfer
 
+> [!CAUTION]
+> ## Not yet stable
+>
+> **machine-transfer is young and still changing. Its steps, templates and scripts are not final.**
+>
+> Version numbers are dates (YY.M.R), not semantic versions, so any release may change how a move runs. Read each script before you run it, try the method on one quiet sidebar section first, and check the [CHANGELOG](CHANGELOG.md) (or the release notes) before you upgrade.
+
 A Claude Code skill for moving a busy Claude Code workspace from one Mac to
 another without losing work in flight.
 
