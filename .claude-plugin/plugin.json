@@ -6,5 +6,6 @@
   "homepage": "https://n-uf.com/claude-machine-transfer",
   "repository": "https://github.com/n-uf/claude-machine-transfer",
   "license": "MIT",
+  "icon": "./assets/icon.png",
   "keywords": ["claude-code", "skill", "migration", "machine-transfer", "handoff", "remote-control"]
 }
